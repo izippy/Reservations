@@ -17,15 +17,15 @@
 |:----------------|:-----------------------------------|:---------------------------------------------------------------|
 | GET             | /api/reserved/:listingid| Return reservations               |
 | POST            | /api/reserved/	           | Add reservation for listing                       |
-| PUT             | /api/reserved/:id	             | Update specific reserved date for a listing|
-| PATCH           | /api/reserved/:id	              | Update and modify booked date for a listing|
-| DELETE          | /api/reserved/:id	       | Delete reservation with id                   |
+| PUT             | /api/reserved/:listingid	             | Update specific reserved date for a listing|
+| PATCH           | /api/reserved/:listingid	              | Update and modify booked date for a listing|
+| DELETE          | /api/reserved/:listingid	       | Delete reservation with id                   |
 
 ## CustomRates
 | HTTP Method   | Endpoint               | Description                                                   |
 |:--------------|:-----------------------|:--------------------------------------------------------------|
 | GET           | /api/rate/:listingid | Return custom rates                      |
 | POST          | /api/rate/           | Add rate for listing                                          |
-| PUT           | /api/rate/:id	 | Update specific custom rate for a listing             |
-| PATCH         | /api/rate/:id	 | Update and modify custom rate for a listing              |
-| DELETE        | /api/rate/:id	 | Delete custom rate with id                                     |
+| PUT           | /api/rate/:listingid	 | Update specific custom rate for a listing             |
+| PATCH         | /api/rate/:listingid	 | Update and modify custom rate for a listing              |
+| DELETE        | /api/rate/:listingid	 | Delete custom rate with id                                     |
