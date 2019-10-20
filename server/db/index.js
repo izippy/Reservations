@@ -1,116 +1,35 @@
-const Sequelize = require('sequelize');
+const { Client } = require('pg');
 
-const sequelize = new Sequelize('guestly_reservations', 'root', '', {
-  host: '172.17.0.2',
-  dialect: 'mysql',
+const client = new Client();
+
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: 'lun',
+  host: 'localhost',
+  database: 'reservations',
+  password: '',
+  port: 5432,
 });
 
-const Listing = sequelize.define('listing', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    primaryKey: true,
-    unique: true
-  },
-  max_guests: {
-    type: Sequelize.INTEGER,
-    allowNull: false
-  },
-  cleaning_fee: {
-    type: Sequelize.INTEGER,
-    defaultValue: 0,
-  },
-  local_tax: {
-    type: Sequelize.DECIMAL(10,2),
-    defaultValue: 0.085,
-  },
-  min_stay: {
-    type: Sequelize.INTEGER,
-    defaultValue: 1,
-  },
-  base_rate: {
-    type: Sequelize.DECIMAL(10,2),
-    allowNull: false
-  },
-  extra_guest_cap: {
-    type: Sequelize.INTEGER,
-    allowNull: true
-  },
-  extra_guest_charge: {
-    type: Sequelize.INTEGER,
-    allowNull: true,
-  },
-  currency: {
-    type: Sequelize.STRING,
-    defaultValue: 'USD'
-  },
-  star_rating: {
-    type: Sequelize.DECIMAL(10,1),
-  },
-  review_count: {
-    type: Sequelize.INTEGER
-  }
-});
+function listingsFindOne(id, cb) {
+  pool.query('SELECT * FROM listings WHERE listing_id = $1', [id], (error, results) => {
+    cb(error, results);
+  });
+}
 
-const Reserved = sequelize.define('reserved_date', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    unique: true,
-    primaryKey: true
-  },
-  listing_id: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Listing,
-      key: 'id',
-    }
-  },
-  date: {
-    type: Sequelize.DATEONLY,
-  }
-},
-{
-  indexes: [
-      {
-          unique: true,
-          fields: ['listing_id', 'date']
-      }
-  ]
-})
+function reservedFind(id, cb) {
+  pool.query('SELECT * FROM reserved WHERE listing_id = $1', [id], (error, results) => {
+    cb(error, results);
+  });
+}
 
-const CustomRates = sequelize.define('custom_rate', {
-  id: {
-    type: Sequelize.INTEGER,
-    autoIncrement: true,
-    unique: true,
-    primaryKey: true
-  },
-  listing_id: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Listing,
-      key: 'id'
-    }
-  },
-  date: {
-    type: Sequelize.DATEONLY,
-  },
-  price: {
-    type: Sequelize.DECIMAL(10,2)
-  }
-},
-{
-  indexes: [
-      {
-          unique: true,
-          fields: ['listing_id', 'date']
-      }
-  ]
-})
-
-sequelize.sync();
+function ratesFind(id, cb) {
+  pool.query('SELECT * FROM rates WHERE listing_id = $1', [id], (error, results) => {
+    cb(error, results);
+  });
+}
 
 module.exports = {
-  Listing, Reserved, CustomRates, sequelize,
-}
+  listingsFindOne, reservedFind, ratesFind,
+};

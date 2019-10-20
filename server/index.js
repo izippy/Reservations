@@ -1,26 +1,29 @@
 const express = require('express');
 const path = require('path');
+
 const app = express();
-const port = 3006;
+const port = 3000;
 const bodyParser = require('body-parser');
-const sequelize = require('sequelize');
 const db = require('./db/index.js');
+// const db = require('./db/cs.js');
 
 app.use(bodyParser());
-app.use('/:listingID', express.static(path.resolve(__dirname, '../public/dist')));
+// app.use('/:listing_id', express.static(path.resolve(__dirname, '../client/dist')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
-app.get('/listing/:listingID', (req, res) => {
-  const { listingID } = req.params;
+app.get('/listing/:listing_id', (req, res) => {
+  const { listing_id } = req.params;
 
-  db.Listing.findOne({
-    where: {
-      id: listingID,
-    },
-  }).then(results => res.send(results))
-    .catch(error => res.send(error));
+  db.listingsFindOne(listing_id, (err, listing) => {
+    if (err) {
+      res.status(400).end();
+    } else {
+      res.status(200).send(listing.rows[0]);
+    }
+  });
 });
 
-app.get('/reserved/month/', (req, res) => {
+app.get('/reserved/:listing_id/', (req, res) => {
   const { id, month, year } = req.query;
 
   db.Reserved.findAll({
@@ -31,14 +34,14 @@ app.get('/reserved/month/', (req, res) => {
       listing_id: id,
     },
   })
-  .then((results) => {
-    const days = results.map(date => Number(date.date.slice(-2)));
-    res.send(days);
-  })
+    .then((results) => {
+      const days = results.map(date => Number(date.date.slice(-2)));
+      res.send(days);
+    })
     .catch(error => res.send(error));
 });
 
-app.get('/custom/month/', (req, res) => {
+app.get('/rates/:listing_id', (req, res) => {
   const { id, time } = req.query;
 
   db.CustomRates.findAll({
