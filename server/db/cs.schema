@@ -1,0 +1,28 @@
+CREATE TABLE reservations.reserved (
+    listing_id int,
+    date timestamp,
+    PRIMARY KEY (listing_id, date)
+); 
+
+CREATE TABLE reservations.listings (
+    listing_id int PRIMARY KEY,
+    base_rate float,
+    cleaning_fee int,
+    currency text,
+    extra_guest_cap int,
+    extra_guest_charge int,
+    local_tax float,
+    max_guests int,
+    min_stay int,
+    review_count int,
+    star_rating float
+); 
+
+CREATE TABLE reservations.rates (
+    listing_id int,
+    date timestamp,
+    price float,
+    PRIMARY KEY (listing_id, date)
+); 
+
+
